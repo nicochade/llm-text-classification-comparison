@@ -1,0 +1,10 @@
+# Minimum versions tested against Colab T4 runtime.
+transformers>=4.44
+accelerate>=0.33
+torch>=2.1
+scikit-learn>=1.3
+pandas>=2.0
+numpy>=1.24
+seaborn>=0.12
+matplotlib>=3.7
+tqdm>=4.66
