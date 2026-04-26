@@ -25,7 +25,7 @@ All methods share one data protocol. The IMDB CSV has no official split indicato
 
 ## Why not the original coursework notebook?
 
-The archived notebook (`notebooks/archive/Practico_2_Grupo_22.ipynb`) had three critical methodological flaws:
+The archived notebook (`notebooks/archive/llm_diplo.ipynb`) had three critical methodological flaws:
 
 1. Prompt selection and final evaluation ran on the same 500 rows — classic selection bias.
 2. The baseline and the SLM were evaluated on different data (the baseline on a test split that the SLM's "evaluation sample" partially overlapped with, via the training split).
@@ -38,19 +38,17 @@ This repository fixes all three issues and reports honest numbers with confidenc
 ```
 .
 ├── README.md                   # this file
-├── requirements.txt            # pinned dependencies
-├── CLAUDE.md                   # project directives for AI assistants
+├── requirements.txt            # project dependencies (minimum versions)
 ├── notebooks/
 │   ├── llm_experiment.ipynb    # the deliverable (Spanish narrative)
 │   └── archive/
-│       ├── Practico_1_Grupo_22.ipynb   # supporting coursework (EDA, embeddings)
-│       └── Practico_2_Grupo_22.ipynb   # original coursework (superseded, kept for transparency)
+│       └── llm_diplo.ipynb     # original coursework (superseded, kept for transparency)
 ├── src/
 │   ├── data.py                 # load / split / subsample / few-shot selection
 │   ├── classify.py             # prompts, model loading, chat wrapper, batch classification
 │   └── evaluate.py             # metrics, bootstrap CIs, comparison table, error analysis
 ├── data/
-│   └── raw/                    # dataset is downloaded at notebook runtime
+│   └── raw/                    # dataset is downloaded at notebook runtime (not tracked)
 └── results/                    # val_grid.csv and final_comparison.csv written here
 ```
 
@@ -63,20 +61,17 @@ This repository fixes all three issues and reports honest numbers with confidenc
    pip install -r requirements.txt
    ```
 
-3. Open `notebooks/llm_experiment.ipynb`. A GPU is recommended for faster SLM inference (a free Colab T4 is sufficient), but the notebook can also run locally. The TF-IDF baseline runs on CPU.
-4. Run all cells top to bottom. Expected runtime on a T4: roughly 25-30 minutes end-to-end; local runtimes may be longer depending on hardware.
+3. Open `notebooks/llm_experiment.ipynb`. Experiments can be run locally or on a Google Colab T4 runtime; the published run was executed locally. A GPU is recommended for faster SLM inference. The TF-IDF baseline runs on CPU.
+4. Run all cells top to bottom. Local runtimes vary with hardware; on a Colab T4 the notebook completes in roughly 25–30 minutes end-to-end.
 5. Inspect `results/val_grid.csv` (prompt-selection grid on validation) and `results/final_comparison.csv` (held-out test results with CIs).
 
 ## Dataset
 
-IMDB movie reviews (50,000 reviews, binary sentiment). The notebook downloads a flat CSV dump (reviewed to have only `review` and `sentiment` columns, no split indicator). After deduplication: ~49,582 rows.
+IMDB movie reviews (50,000 reviews, binary sentiment). The CSV is **not tracked in this repository**: the notebook downloads it on first run from the public Google Drive mirror referenced in `notebooks/llm_experiment.ipynb` and writes it to `data/raw/imdb_dataset.csv`. If automatic download fails (rate limits, network restrictions), download the file manually from the same source and place it at that exact path before running the rest of the notebook. The CSV has only `review` and `sentiment` columns and no official split indicator. After deduplication: ~49,582 rows.
 
 ## Interpretive notes
 
 - **Decoding mode is irrelevant with `max_new_tokens=1`.** The original coursework notebook ran three decoding configurations (greedy, sampling at 0.15 and 0.35) and they produced identical predictions for every prompt. This notebook fixes the decoding mode to greedy and drops that axis from the grid.
 - **If the Spanish prompt outperforms the English prompt on this English dataset**, that is an empirical finding about this specific model and tokenizer. It is not grounds for a general recommendation. Possible explanations include the model's multilingual training mix and tokenization differences.
 - **Bootstrap CIs should be read before any claim of "method X beats method Y".** If the CIs overlap substantially at N=1000, the difference is not conclusive at this sample size.
-
-## License
-
-This repository is for portfolio / educational use.
+- **Few-shot prompting did not improve validation performance in this setup.** The `fs_train` configuration scored below the zero-shot prompts on the validation grid (see `results/val_grid.csv`). This suggests that example selection, prompt length, or the smaller validation subset may have introduced noise rather than useful guidance, rather than indicating a general failure of few-shot prompting.

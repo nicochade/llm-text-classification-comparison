@@ -1,4 +1,27 @@
+# OS
 .DS_Store
-.venv/
+
+# Python
 __pycache__/
+*.pyc
 .ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Local caches and model artifacts
+.cache/
+models/
+*.bin
+*.safetensors
+
+# Raw data (downloaded at runtime, not tracked)
+data/raw/*.csv
