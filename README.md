@@ -25,7 +25,7 @@ All methods share one data protocol. The IMDB CSV has no official split indicato
 
 ## Why not the original coursework notebook?
 
-The archived notebook (`notebooks/archive/llm_diplo.ipynb`) had three critical methodological flaws:
+The original coursework notebook is intentionally not included in this repository to keep the scope focused. It had three critical methodological flaws:
 
 1. Prompt selection and final evaluation ran on the same 500 rows — classic selection bias.
 2. The baseline and the SLM were evaluated on different data (the baseline on a test split that the SLM's "evaluation sample" partially overlapped with, via the training split).
@@ -40,9 +40,7 @@ This repository fixes all three issues and reports honest numbers with confidenc
 ├── README.md                   # this file
 ├── requirements.txt            # project dependencies (minimum versions)
 ├── notebooks/
-│   ├── llm_experiment.ipynb    # the deliverable (Spanish narrative)
-│   └── archive/
-│       └── llm_diplo.ipynb     # original coursework (superseded, kept for transparency)
+│   └── llm_experiment.ipynb    # the deliverable (Spanish narrative)
 ├── src/
 │   ├── data.py                 # load / split / subsample / few-shot selection
 │   ├── classify.py             # prompts, model loading, chat wrapper, batch classification
@@ -72,6 +70,10 @@ IMDB movie reviews (50,000 reviews, binary sentiment). The CSV is **not tracked 
 ## Interpretive notes
 
 - **Decoding mode is irrelevant with `max_new_tokens=1`.** The original coursework notebook ran three decoding configurations (greedy, sampling at 0.15 and 0.35) and they produced identical predictions for every prompt. This notebook fixes the decoding mode to greedy and drops that axis from the grid.
-- **If the Spanish prompt outperforms the English prompt on this English dataset**, that is an empirical finding about this specific model and tokenizer. It is not grounds for a general recommendation. Possible explanations include the model's multilingual training mix and tokenization differences.
+- **The Spanish prompt outperforming the English prompt on this English dataset** is an empirical finding about this specific model and tokenizer. It is not grounds for a general recommendation. Possible explanations include the model's multilingual training mix and tokenization differences.
 - **Bootstrap CIs should be read before any claim of "method X beats method Y".** If the CIs overlap substantially at N=1000, the difference is not conclusive at this sample size.
 - **Few-shot prompting did not improve validation performance in this setup.** The `fs_train` configuration scored below the zero-shot prompts on the validation grid (see `results/val_grid.csv`). This suggests that example selection, prompt length, or the smaller validation subset may have introduced noise rather than useful guidance, rather than indicating a general failure of few-shot prompting.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

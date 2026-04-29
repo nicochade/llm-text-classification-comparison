@@ -25,3 +25,6 @@ models/
 
 # Raw data (downloaded at runtime, not tracked)
 data/raw/*.csv
+
+# Original coursework archive (intentionally excluded from public repo)
+notebooks/archive/
